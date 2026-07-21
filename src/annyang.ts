@@ -59,7 +59,7 @@ const commandToRegExp = (command: string) => {
     .replace(escapeRegExp, '\\$&')
     .replace(optionalParam, '(?:$1)?')
     .replace(namedParam, (match, optional) => {
-      return optional ? match : '([^\\s]+)';
+        throw new Error("STUB");
     })
     .replace(splatParam, '(.*?)')
     .replace(optionalRegex, '\\s*$1?\\s*');
@@ -94,7 +94,7 @@ const registerCommand = (command: RegExp, callback: AnyFunction, originalPhrase:
 // This method receives an array of callbacks and invokes each of them
 const invokeCallbacks = (callbacksArr: StoredCallback[] = [], ...args: unknown[]) => {
   callbacksArr.forEach(cb => {
-    cb.callback.apply(cb.context, args);
+      throw new Error("STUB");
   });
 };
 
@@ -123,69 +123,23 @@ const init = () => {
   recognition.lang = 'en-US';
 
   recognition.onstart = () => {
-    listening = true;
-    invokeCallbacks(callbacks.get('start'));
+      throw new Error("STUB");
   };
 
   recognition.onsoundstart = () => {
-    invokeCallbacks(callbacks.get('soundstart'));
+      throw new Error("STUB");
   };
 
   recognition.onerror = event => {
-    invokeCallbacks(callbacks.get('error'), event);
-    switch (event.error) {
-      case 'network':
-        invokeCallbacks(callbacks.get('errorNetwork'), event);
-        break;
-      case 'not-allowed':
-      case 'service-not-allowed':
-        // if permission to use the mic is denied, turn off auto-restart
-        autoRestart = false;
-        // determine if permission was denied by user or automatically.
-        if (new Date().getTime() - lastStartedAt < 200) {
-          invokeCallbacks(callbacks.get('errorPermissionBlocked'), event);
-        } else {
-          invokeCallbacks(callbacks.get('errorPermissionDenied'), event);
-        }
-        break;
-      default:
-        break;
-    }
+      throw new Error("STUB");
   };
 
   recognition.onend = () => {
-    listening = false;
-    invokeCallbacks(callbacks.get('end'));
-    // annyang will auto restart if it is closed automatically and not by user action.
-    if (autoRestart) {
-      // play nicely with the browser, and never restart annyang automatically more than once per second
-      const timeSinceLastStart = new Date().getTime() - lastStartedAt;
-      autoRestartCount += 1;
-      if (autoRestartCount % RESTART_WARNING_INTERVAL === 0) {
-        logMessage(
-          'Speech Recognition is repeatedly stopping and starting. See http://is.gd/annyang_restarts for tips.'
-        );
-      }
-      if (timeSinceLastStart < MIN_RESTART_INTERVAL_MS) {
-        setTimeout(() => {
-          start({ paused: pauseListening });
-        }, MIN_RESTART_INTERVAL_MS - timeSinceLastStart);
-      } else {
-        start({ paused: pauseListening });
-      }
-    }
+      throw new Error("STUB");
   };
 
   recognition.onresult = (event: SpeechRecognitionEvent) => {
-    if (pauseListening) {
-      logMessage('Speech heard, but annyang is paused');
-      return;
-    }
-
-    // Map the results to an array
-    const SpeechRecognitionResults = event.results[event.resultIndex];
-    const results = Array.from(SpeechRecognitionResults, result => result.transcript);
-    parseResults(results);
+      throw new Error("STUB");
   };
 };
 
@@ -308,7 +262,7 @@ const removeCommands = (commandsToRemove?: string | string[] | undefined) => {
     commandsList.clear();
   } else {
     const commandsToRemoveArray = Array.isArray(commandsToRemove) ? commandsToRemove : [commandsToRemove];
-    commandsToRemoveArray.forEach(command => commandsList.delete(command));
+    commandsToRemoveArray.forEach(command => { throw new Error("STUB"); });
   }
 };
 
@@ -467,14 +421,12 @@ const addCallback = <T extends CallbackType>(
     };
     callbacksOfType.push(entry);
     return () => {
-      const arr = callbacks.get(type);
-      if (arr) {
-        const idx = arr.indexOf(entry);
-        if (idx !== -1) arr.splice(idx, 1);
-      }
+        throw new Error("STUB");
     };
   }
-  return () => {};
+  return () => {
+      throw new Error("STUB");
+  };
 };
 
 /**
@@ -511,16 +463,7 @@ const addCallback = <T extends CallbackType>(
  */
 const removeCallback = (type?: CallbackType, callback?: CallbackMap[CallbackType]) => {
   callbacks.forEach((callbacksArray, callbackType) => {
-    if (type === undefined || type === callbackType) {
-      if (callback === undefined) {
-        callbacks.get(callbackType)!.length = 0;
-      } else {
-        callbacks.set(
-          callbackType,
-          callbacksArray.filter(cb => cb.callback !== callback)
-        );
-      }
-    }
+      throw new Error("STUB");
   });
 };
 
@@ -649,7 +592,7 @@ const annyang = {
   getState,
   init: initDeprecated,
   get state() {
-    return getState();
+      throw new Error("STUB");
   },
 } as const;
 
